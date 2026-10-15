@@ -1,0 +1,11 @@
+lease_id,quarry_name,mineral,district,company_name,vertex_order,latitude,longitude
+DEMO-CKW-01,Chakwal Limestone Quarry,Limestone,Chakwal,Fauji Cement Ltd,1,32.9025,72.7150
+DEMO-CKW-01,Chakwal Limestone Quarry,Limestone,Chakwal,Fauji Cement Ltd,2,32.9120,72.7165
+DEMO-CKW-01,Chakwal Limestone Quarry,Limestone,Chakwal,Fauji Cement Ltd,3,32.9110,72.7290
+DEMO-CKW-01,Chakwal Limestone Quarry,Limestone,Chakwal,Fauji Cement Ltd,4,32.9015,72.7275
+DEMO-CKW-01,Chakwal Limestone Quarry,Limestone,Chakwal,Fauji Cement Ltd,5,32.9025,72.7150
+DEMO-DDT-02,Dandot Salt Range Gypsum,Gypsum,Jhelum,Gharibwal Mining,1,32.6450,72.9600
+DEMO-DDT-02,Dandot Salt Range Gypsum,Gypsum,Jhelum,Gharibwal Mining,2,32.6530,72.9620
+DEMO-DDT-02,Dandot Salt Range Gypsum,Gypsum,Jhelum,Gharibwal Mining,3,32.6515,72.9730
+DEMO-DDT-02,Dandot Salt Range Gypsum,Gypsum,Jhelum,Gharibwal Mining,4,32.6435,72.9710
+DEMO-DDT-02,Dandot Salt Range Gypsum,Gypsum,Jhelum,Gharibwal Mining,5,32.6450,72.9600

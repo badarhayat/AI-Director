@@ -1,0 +1,95 @@
+# =====================================================================
+# AI-MIMS (AI Mining Inspection and Monitoring System) - .gitignore
+# =====================================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables, Secrets & Keys
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.pfx
+
+# Local SQLite Database & Wal Files
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+backend/app/data/*.db
+backend/app/data/*.db-journal
+
+# Generated Inspection Reports, Maps & Downloads (Keep .gitkeep)
+backend/app/data/reports/*
+!backend/app/data/reports/.gitkeep
+
+# Uploaded Datasets & Historical Imports (Keep .gitkeep)
+backend/app/data/uploads/*
+!backend/app/data/uploads/.gitkeep
+
+# Sample Imagery Cached Files (Keep .gitkeep)
+backend/app/data/sample_imagery/*
+!backend/app/data/sample_imagery/.gitkeep
+
+# Node / Frontend Build & Dependencies
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+.vite/
+frontend/.vite/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor & OS Artifacts
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
