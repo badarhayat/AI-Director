@@ -93,3 +93,14 @@ lerna-debug.log*
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Android Build Artifacts & Local Files
+.gradle/
+frontend/android/.gradle/
+frontend/android/build/
+frontend/android/app/build/
+frontend/android/local.properties
+*.apk
+*.aab
+*.keystore
+*.jks

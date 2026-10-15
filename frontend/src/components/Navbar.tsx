@@ -1,12 +1,13 @@
 import React from 'react';
-import { Shield, Satellite, RotateCcw, AlertTriangle } from 'lucide-react';
+import { Shield, Satellite, RotateCcw, AlertTriangle, Menu } from 'lucide-react';
 import { resetDemoData } from '../api/client';
 
 interface NavbarProps {
   onRefresh?: () => void;
+  onToggleSidebar?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onRefresh }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onRefresh, onToggleSidebar }) => {
   const [resetting, setResetting] = React.useState(false);
 
   const handleReset = async () => {
@@ -25,19 +26,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onRefresh }) => {
   };
 
   return (
-    <header className="bg-slate-900 border-b border-slate-800 text-white px-6 py-3 flex items-center justify-between sticky top-0 z-50 shadow-md">
-      <div className="flex items-center space-x-4">
-        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-400">
-          <Shield className="w-6 h-6" />
+    <header className="bg-slate-900 border-b border-slate-800 text-white px-4 md:px-6 py-2.5 flex items-center justify-between sticky top-0 z-50 shadow-md">
+      <div className="flex items-center space-x-3">
+        {onToggleSidebar && (
+          <button
+            onClick={onToggleSidebar}
+            className="md:hidden p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 focus:outline-none"
+            aria-label="Toggle navigation menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
+        <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-400">
+          <Shield className="w-5 h-5" />
         </div>
         <div>
           <div className="flex items-center space-x-2">
-            <h1 className="font-bold text-lg text-slate-100 tracking-tight">AI-MIMS</h1>
-            <span className="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-700 font-mono">v1.0-DEMO</span>
-            <span className="text-xs font-semibold text-emerald-400">| Punjab Mining Inspection & Monitoring</span>
+            <h1 className="font-bold text-base md:text-lg text-slate-100 tracking-tight">AI-MIMS</h1>
+            <span className="text-[10px] md:text-xs bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded border border-slate-700 font-mono">v1.0</span>
+            <span className="hidden sm:inline text-xs font-semibold text-emerald-400">| Punjab Mining Surveillance</span>
           </div>
-          <p className="text-xs text-slate-400">
-            Directorate General of Mines & Minerals • Government of the Punjab, Pakistan
+          <p className="text-[10px] md:text-xs text-slate-400 truncate max-w-[200px] sm:max-w-none">
+            DGM&M • Government of the Punjab
           </p>
         </div>
       </div>

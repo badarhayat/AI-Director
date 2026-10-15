@@ -1,6 +1,13 @@
 import { Lease, AnalysisResult, DashboardStats, MineralProperty } from '../types';
 
-const API_BASE = '/api';
+const LIVE_URL = 'https://ai-director-xn44.onrender.com';
+const isDev = import.meta.env.DEV;
+const isLiveDomain = typeof window !== 'undefined' && 
+  (window.location.host.includes('onrender.com') || window.location.protocol === 'https:');
+
+export const API_BASE = (isDev || isLiveDomain) 
+  ? '/api' 
+  : (import.meta.env.VITE_API_BASE || `${LIVE_URL}/api`);
 
 export async function fetchLeases(): Promise<Lease[]> {
   const res = await fetch(`${API_BASE}/leases`);
