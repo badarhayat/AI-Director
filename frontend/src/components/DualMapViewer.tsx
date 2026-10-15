@@ -679,36 +679,28 @@ export const DualMapViewer: React.FC<DualMapViewerProps> = ({
 
       {/* Main Map Workspace Canvas */}
       <div className="flex-1 w-full relative overflow-hidden" ref={swipeWrapperRef}>
-        {/* VIEW MODE 1: SPLIT (Side-by-Side Synchronized Panels) */}
+        {/* VIEW MODE 1: SPLIT (Synchronized Panels) */}
         {viewMode === 'split' && (
-          <div className="grid grid-cols-2 h-full w-full divide-x divide-slate-800">
+          <div className="grid grid-cols-1 md:grid-cols-2 h-full w-full divide-y md:divide-y-0 md:divide-x divide-slate-800">
             {/* Left Panel: BEFORE (T1) */}
             <div className="relative h-full w-full">
               <div ref={containerBeforeRef} className="h-full w-full z-0" />
               {/* Header Badge: BEFORE */}
-              <div className="absolute top-3 left-3 z-10 bg-slate-900/90 backdrop-blur border border-slate-700 rounded-lg px-3 py-2 text-xs shadow-lg space-y-1">
-                <div className="flex items-center space-x-2">
-                  <span className="bg-blue-600 text-white font-bold px-2 py-0.5 rounded text-[10px] tracking-wider uppercase">
+              <div className="absolute top-2.5 left-2.5 z-10 bg-slate-900/90 backdrop-blur border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs shadow-lg space-y-0.5">
+                <div className="flex items-center space-x-1.5">
+                  <span className="bg-blue-600 text-white font-bold px-1.5 py-0.5 rounded text-[9px] tracking-wider uppercase">
                     BEFORE (T1)
                   </span>
-                  <span className="font-semibold text-slate-200">Baseline Imagery</span>
+                  <span className="font-semibold text-slate-200 text-[11px]">Baseline</span>
                 </div>
-                <div className="text-[11px] text-slate-300 space-y-0.5">
-                  <div className="flex justify-between space-x-3">
-                    <span className="text-slate-400">Target Date:</span>
-                    <span className="font-mono text-slate-200">{meta?.requested_start_date || '2024-01-15'}</span>
-                  </div>
-                  <div className="flex justify-between space-x-3">
-                    <span className="text-slate-400">Overpass Date:</span>
+                <div className="text-[10px] sm:text-[11px] text-slate-300 space-y-0.5">
+                  <div className="flex justify-between space-x-2">
+                    <span className="text-slate-400">Date:</span>
                     <span className="font-mono text-emerald-400 font-bold">{meta?.actual_start_date || '2024-01-10'}</span>
                   </div>
-                  <div className="flex justify-between space-x-3">
-                    <span className="text-slate-400">Platform & Res:</span>
+                  <div className="hidden sm:flex justify-between space-x-2">
+                    <span className="text-slate-400">Sensor:</span>
                     <span className="text-slate-200">{meta?.satellite || 'Sentinel-2A'} (10m)</span>
-                  </div>
-                  <div className="flex justify-between space-x-3">
-                    <span className="text-slate-400">Cloud Cover:</span>
-                    <span className="text-slate-200">{meta?.cloud_cover_start_pct ?? 0.0}%</span>
                   </div>
                 </div>
               </div>
@@ -718,29 +710,21 @@ export const DualMapViewer: React.FC<DualMapViewerProps> = ({
             <div className="relative h-full w-full">
               <div ref={containerAfterRef} className="h-full w-full z-0" />
               {/* Header Badge: AFTER */}
-              <div className="absolute top-3 left-3 z-10 bg-slate-900/90 backdrop-blur border border-slate-700 rounded-lg px-3 py-2 text-xs shadow-lg space-y-1">
-                <div className="flex items-center space-x-2">
-                  <span className="bg-amber-600 text-white font-bold px-2 py-0.5 rounded text-[10px] tracking-wider uppercase">
+              <div className="absolute top-2.5 left-2.5 z-10 bg-slate-900/90 backdrop-blur border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs shadow-lg space-y-0.5">
+                <div className="flex items-center space-x-1.5">
+                  <span className="bg-amber-600 text-white font-bold px-1.5 py-0.5 rounded text-[9px] tracking-wider uppercase">
                     AFTER (T2)
                   </span>
-                  <span className="font-semibold text-slate-200">Recent Surveillance</span>
+                  <span className="font-semibold text-slate-200 text-[11px]">Surveillance</span>
                 </div>
-                <div className="text-[11px] text-slate-300 space-y-0.5">
-                  <div className="flex justify-between space-x-3">
-                    <span className="text-slate-400">Target Date:</span>
-                    <span className="font-mono text-slate-200">{meta?.requested_end_date || '2024-04-15'}</span>
-                  </div>
-                  <div className="flex justify-between space-x-3">
-                    <span className="text-slate-400">Overpass Date:</span>
+                <div className="text-[10px] sm:text-[11px] text-slate-300 space-y-0.5">
+                  <div className="flex justify-between space-x-2">
+                    <span className="text-slate-400">Date:</span>
                     <span className="font-mono text-emerald-400 font-bold">{meta?.actual_end_date || '2024-04-09'}</span>
                   </div>
-                  <div className="flex justify-between space-x-3">
-                    <span className="text-slate-400">Platform & Res:</span>
+                  <div className="hidden sm:flex justify-between space-x-2">
+                    <span className="text-slate-400">Sensor:</span>
                     <span className="text-slate-200">{meta?.satellite || 'Sentinel-2A'} (10m)</span>
-                  </div>
-                  <div className="flex justify-between space-x-3">
-                    <span className="text-slate-400">Cloud Cover:</span>
-                    <span className="text-slate-200">{meta?.cloud_cover_end_pct ?? 0.0}%</span>
                   </div>
                 </div>
               </div>

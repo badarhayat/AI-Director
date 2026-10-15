@@ -55,6 +55,7 @@ export const Monitoring: React.FC<MonitoringProps> = ({
   const [reviewStatus, setReviewStatus] = useState<string>('PENDING_REVIEW');
   const [reviewerRemarks, setReviewerRemarks] = useState<string>('');
   const [isSavingReview, setIsSavingReview] = useState<boolean>(false);
+  const [mobileTab, setMobileTab] = useState<'map' | 'details'>('map');
 
   // Load lease list on mount
   useEffect(() => {
@@ -176,17 +177,27 @@ export const Monitoring: React.FC<MonitoringProps> = ({
   return (
     <div className="flex-1 flex flex-col h-[calc(100vh-61px)] overflow-hidden bg-slate-950">
       {/* Top Workflow Control Bar */}
-      <div className="bg-slate-900 border-b border-slate-800 p-4 shadow-sm z-20">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-slate-900 border-b border-slate-800 p-3 sm:p-4 shadow-sm z-20 flex-shrink-0">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-3 lg:gap-4">
           {/* Step 1: Lease Selection */}
-          <div className="flex items-center space-x-3">
-            <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center space-x-1">
-              <span>Select Lease:</span>
-            </label>
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center justify-between">
+              <label className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                Select Concession:
+              </label>
+              {onNavigateToImport && (
+                <button
+                  onClick={onNavigateToImport}
+                  className="text-xs text-blue-400 hover:text-blue-300 underline font-medium cursor-pointer sm:hidden"
+                >
+                  + Import CSV
+                </button>
+              )}
+            </div>
             <select
               value={selectedLeaseId}
               onChange={(e) => setSelectedLeaseId(e.target.value)}
-              className="bg-slate-800 border border-slate-700 text-white text-sm rounded-lg px-3 py-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none min-w-[240px]"
+              className="bg-slate-800 border border-slate-700 text-white text-xs sm:text-sm rounded-xl px-3 py-2 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none w-full sm:min-w-[240px] min-h-[42px]"
             >
               {leases.map((l) => (
                 <option key={l.lease_id} value={l.lease_id}>
@@ -194,11 +205,10 @@ export const Monitoring: React.FC<MonitoringProps> = ({
                 </option>
               ))}
             </select>
-
             {onNavigateToImport && (
               <button
                 onClick={onNavigateToImport}
-                className="text-xs text-blue-400 hover:text-blue-300 underline font-medium cursor-pointer"
+                className="hidden sm:inline text-xs text-blue-400 hover:text-blue-300 underline font-medium cursor-pointer ml-1"
               >
                 + Import CSV
               </button>
@@ -206,36 +216,34 @@ export const Monitoring: React.FC<MonitoringProps> = ({
           </div>
 
           {/* Step 2: Date Window Selection with Presets */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center space-x-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
-              <Calendar className="w-4 h-4 text-slate-400" />
-              <div className="flex items-center space-x-2 text-xs">
-                <span className="text-slate-400">Baseline T1:</span>
+          <div className="w-full lg:w-auto flex flex-col gap-1.5">
+            <div className="grid grid-cols-2 gap-2 bg-slate-800/80 p-1.5 rounded-xl border border-slate-700">
+              <div className="flex flex-col text-[11px]">
+                <span className="text-slate-400 text-[10px] uppercase font-semibold px-1">T1 Baseline:</span>
                 <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="bg-slate-900 text-slate-200 border border-slate-700 rounded px-2 py-1 text-xs"
+                  className="bg-slate-900 text-slate-100 border border-slate-700 rounded-lg px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 min-h-[38px]"
                 />
               </div>
-              <span className="text-slate-500">to</span>
-              <div className="flex items-center space-x-2 text-xs">
-                <span className="text-slate-400">Recent T2:</span>
+              <div className="flex flex-col text-[11px]">
+                <span className="text-slate-400 text-[10px] uppercase font-semibold px-1">T2 Recent:</span>
                 <input
                   type="date"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
-                  className="bg-slate-900 text-slate-200 border border-slate-700 rounded px-2 py-1 text-xs"
+                  className="bg-slate-900 text-slate-100 border border-slate-700 rounded-lg px-2 py-1.5 text-xs focus:ring-1 focus:ring-blue-500 min-h-[38px]"
                 />
               </div>
             </div>
 
             {/* Verification Presets */}
-            <div className="hidden lg:flex items-center space-x-1.5">
+            <div className="flex items-center space-x-1.5 overflow-x-auto py-0.5 no-scrollbar">
               <button
                 type="button"
                 onClick={() => applyDatePreset('annual')}
-                className="text-[11px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2 py-1 rounded transition cursor-pointer"
+                className="text-[10px] sm:text-[11px] whitespace-nowrap bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2.5 py-1 rounded-lg transition"
                 title="1-Year observation window with unpermitted encroachment"
               >
                 1-Year Period
@@ -243,15 +251,15 @@ export const Monitoring: React.FC<MonitoringProps> = ({
               <button
                 type="button"
                 onClick={() => applyDatePreset('quarterly')}
-                className="text-[11px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2 py-1 rounded transition cursor-pointer"
+                className="text-[10px] sm:text-[11px] whitespace-nowrap bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-2.5 py-1 rounded-lg transition"
                 title="3-Month observation window with pit deepening"
               >
-                Quarterly Period
+                Quarterly
               </button>
               <button
                 type="button"
                 onClick={() => applyDatePreset('same_date')}
-                className="text-[11px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 px-2 py-1 rounded transition cursor-pointer"
+                className="text-[10px] sm:text-[11px] whitespace-nowrap bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 px-2.5 py-1 rounded-lg transition"
                 title="Same date comparison (verifies zero-change handling)"
               >
                 No-Change Check
@@ -263,10 +271,10 @@ export const Monitoring: React.FC<MonitoringProps> = ({
           <button
             onClick={handleRunAnalysis}
             disabled={isAnalyzing || !selectedLeaseId}
-            className={`flex items-center space-x-2 px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg transition cursor-pointer ${
+            className={`w-full lg:w-auto flex items-center justify-center space-x-2 px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg transition cursor-pointer min-h-[44px] ${
               isAnalyzing
                 ? 'bg-blue-800 text-blue-200 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-500 text-white hover:shadow-blue-500/20'
+                : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white hover:shadow-blue-500/20 active:scale-[0.98]'
             }`}
           >
             {isAnalyzing ? (
@@ -287,7 +295,7 @@ export const Monitoring: React.FC<MonitoringProps> = ({
         {isAnalyzing && (
           <div className="mt-3 max-w-7xl mx-auto bg-blue-950/40 border border-blue-500/30 rounded-lg p-3">
             <div className="flex items-center space-x-3 text-xs text-blue-300 font-medium">
-              <Loader2 className="w-4 h-4 animate-spin text-blue-400" />
+              <Loader2 className="w-4 h-4 animate-spin text-blue-400 flex-shrink-0" />
               <span>{analysisStage}</span>
             </div>
             <div className="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
@@ -306,22 +314,87 @@ export const Monitoring: React.FC<MonitoringProps> = ({
             <button onClick={() => setErrorMsg(null)} className="text-red-400 hover:text-white font-bold text-sm">×</button>
           </div>
         )}
+
+        {/* Mobile View Switcher Tabs (when on small screens) */}
+        <div className="lg:hidden mt-2 pt-2 border-t border-slate-800/80 flex items-center justify-center">
+          <div className="grid grid-cols-2 w-full max-w-xs bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+            <button
+              onClick={() => setMobileTab('map')}
+              className={`py-1.5 px-3 rounded-lg font-bold transition flex items-center justify-center space-x-1.5 ${
+                mobileTab === 'map'
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Satellite className="w-3.5 h-3.5" />
+              <span>Map View</span>
+            </button>
+            <button
+              onClick={() => setMobileTab('details')}
+              className={`py-1.5 px-3 rounded-lg font-bold transition flex items-center justify-center space-x-1.5 relative ${
+                mobileTab === 'details'
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Dossier</span>
+              {analysisResult && (
+                <span className={`w-2 h-2 rounded-full ${
+                  analysisResult.metrics.outside_disturbance_ha > 0 ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'
+                } ml-1`} />
+              )}
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Main Content Area: Map + Results Panel */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative">
         {/* Left / Center Map Workspace */}
-        <div className="flex-1 relative">
+        <div className={`flex-1 relative h-full ${mobileTab === 'details' ? 'hidden lg:block' : 'block'}`}>
           <MapViewer
             lease={currentLease}
             analysisResult={analysisResult}
             onDownloadPdf={handleDownloadPdf}
             onDownloadKml={handleDownloadKml}
           />
+
+          {/* Mobile Floating Results Summary Pill on Map */}
+          {analysisResult && mobileTab === 'map' && (
+            <div className="lg:hidden absolute bottom-3 inset-x-3 z-30 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-2xl p-2.5 shadow-2xl flex items-center justify-between gap-2">
+              <div className="min-w-0 flex items-center space-x-2">
+                {analysisResult.metrics.outside_disturbance_ha > 0 ? (
+                  <span className="w-3 h-3 rounded-full bg-red-500 animate-pulse flex-shrink-0" />
+                ) : (
+                  <span className="w-3 h-3 rounded-full bg-emerald-500 flex-shrink-0" />
+                )}
+                <div className="truncate">
+                  <div className="text-xs font-bold text-white truncate">
+                    {analysisResult.metrics.outside_disturbance_ha > 0
+                      ? `⚠️ ${analysisResult.metrics.outside_disturbance_ha.toFixed(2)} ha Outside Boundary`
+                      : `✅ Compliant (${analysisResult.metrics.inside_disturbance_ha.toFixed(2)} ha)`}
+                  </div>
+                  <div className="text-[10px] text-slate-400 truncate">
+                    Tap to review complete analytical findings
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setMobileTab('details')}
+                className="flex items-center space-x-1 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-3 py-2 rounded-xl shadow transition flex-shrink-0 min-h-[38px]"
+              >
+                <span>Dossier</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Right Analytical Details & Regulatory Findings Panel */}
-        <div className="w-96 bg-slate-900 border-l border-slate-800 flex flex-col h-full overflow-y-auto">
+        <div className={`w-full lg:w-96 bg-slate-900 border-l border-slate-800 flex flex-col h-full overflow-y-auto ${
+          mobileTab === 'map' ? 'hidden lg:flex' : 'flex'
+        }`}>
           {/* Header */}
           <div className="p-4 border-b border-slate-800">
             <div className="flex items-center justify-between">

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import { Lease, AnalysisResult } from '../types';
 import { Legend } from './Legend';
-import { ExternalLink, Download, FileText, Layers, Compass, Image as ImageIcon } from 'lucide-react';
+import { ExternalLink, Download, FileText, Layers, Compass, Image as ImageIcon, X, Check } from 'lucide-react';
 
 interface MapViewerProps {
   lease?: Lease | null;
@@ -34,6 +34,7 @@ export const MapViewer: React.FC<MapViewerProps> = ({
   const [showVegetationLoss, setShowVegetationLoss] = useState<boolean>(true);
   const [imageMode, setImageMode] = useState<'none' | 'before' | 'after' | 'overlay'>('overlay');
   const [showLegend, setShowLegend] = useState<boolean>(true);
+  const [isMobileLayerSheetOpen, setIsMobileLayerSheetOpen] = useState<boolean>(false);
 
   // Initialize Leaflet Map
   useEffect(() => {
@@ -291,8 +292,8 @@ export const MapViewer: React.FC<MapViewerProps> = ({
 
   return (
     <div className="relative w-full h-full flex flex-col bg-slate-950 overflow-hidden">
-      {/* Top Map Action Toolbar */}
-      <div className="absolute top-3 left-14 z-30 flex flex-wrap items-center gap-2 bg-slate-900/90 backdrop-blur border border-slate-800 px-3 py-2 rounded-xl shadow-lg">
+      {/* Desktop Top Map Action Toolbar */}
+      <div className="hidden md:flex absolute top-3 left-14 z-30 flex-wrap items-center gap-2 bg-slate-900/90 backdrop-blur border border-slate-800 px-3 py-2 rounded-xl shadow-lg">
         {/* Basemap Selector */}
         <div className="flex items-center space-x-1 border-r border-slate-700 pr-3">
           <button
@@ -405,8 +406,8 @@ export const MapViewer: React.FC<MapViewerProps> = ({
         )}
       </div>
 
-      {/* Top Right Integration Actions (Google Earth, KML, PDF) */}
-      <div className="absolute top-3 right-3 z-30 flex items-center space-x-2">
+      {/* Desktop Top Right Integration Actions */}
+      <div className="hidden md:flex absolute top-3 right-3 z-30 items-center space-x-2">
         {lease?.google_earth_url && (
           <a
             href={lease.google_earth_url}
@@ -452,18 +453,266 @@ export const MapViewer: React.FC<MapViewerProps> = ({
         </button>
       </div>
 
+      {/* Mobile Top Floating Control Bar */}
+      <div className="md:hidden absolute top-3 right-3 z-30 flex items-center space-x-2">
+        {lease?.google_earth_url && (
+          <a
+            href={lease.google_earth_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Google Earth"
+            className="flex items-center justify-center w-10 h-10 bg-slate-900/95 backdrop-blur border border-slate-700 text-blue-400 rounded-xl shadow-xl active:scale-95 transition"
+          >
+            <Compass className="w-5 h-5" />
+          </a>
+        )}
+        <button
+          onClick={() => setIsMobileLayerSheetOpen(true)}
+          className="flex items-center space-x-1.5 bg-slate-900/95 backdrop-blur border border-slate-700/80 px-3 py-2 rounded-xl text-xs font-bold text-slate-100 shadow-xl min-h-[40px] active:scale-95 transition"
+        >
+          <Layers className="w-4 h-4 text-blue-400" />
+          <span>Layers</span>
+          {analysisResult && (
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse ml-0.5" />
+          )}
+        </button>
+      </div>
+
+      {/* Mobile Layers & Legend Bottom Sheet */}
+      {isMobileLayerSheetOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex flex-col justify-end">
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+            onClick={() => setIsMobileLayerSheetOpen(false)}
+          />
+          <div className="relative z-50 bg-slate-900 border-t border-slate-700 rounded-t-2xl shadow-2xl max-h-[82vh] flex flex-col overflow-hidden pb-6">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-950">
+              <div className="flex items-center space-x-2">
+                <Layers className="w-4 h-4 text-blue-400" />
+                <span className="text-sm font-bold text-white">Map Layers & Controls</span>
+              </div>
+              <button
+                onClick={() => setIsMobileLayerSheetOpen(false)}
+                className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white border border-slate-700"
+                aria-label="Close layers menu"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Scrollable controls */}
+            <div className="p-4 overflow-y-auto space-y-4 text-xs">
+              {/* Basemap Selection */}
+              <div>
+                <span className="text-slate-400 font-semibold uppercase text-[10px] tracking-wider block mb-2">
+                  Base Imagery Style
+                </span>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setActiveBaseLayer('satellite')}
+                    className={`py-2 px-3 rounded-xl font-medium border text-xs flex items-center justify-center space-x-1.5 ${
+                      activeBaseLayer === 'satellite'
+                        ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
+                        : 'bg-slate-950 text-slate-300 border-slate-800'
+                    }`}
+                  >
+                    <span>🛰️ Satellite</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveBaseLayer('street')}
+                    className={`py-2 px-3 rounded-xl font-medium border text-xs flex items-center justify-center space-x-1.5 ${
+                      activeBaseLayer === 'street'
+                        ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
+                        : 'bg-slate-950 text-slate-300 border-slate-800'
+                    }`}
+                  >
+                    <span>🗺️ Streets</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Boundary & Zone Toggles */}
+              <div>
+                <span className="text-slate-400 font-semibold uppercase text-[10px] tracking-wider block mb-2">
+                  Concession Perimeter & Surveillance
+                </span>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => setShow1kmBuffer(!show1kmBuffer)}
+                    className={`w-full py-2.5 px-3 rounded-xl font-medium border text-xs flex items-center justify-between ${
+                      show1kmBuffer
+                        ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30'
+                        : 'bg-slate-950 text-slate-400 border-slate-800'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="w-3 h-3 rounded-full bg-cyan-400 border border-dashed border-cyan-200" />
+                      <span>1 KM Monitoring Zone</span>
+                    </div>
+                    {show1kmBuffer && <Check className="w-4 h-4 text-cyan-400" />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Satellite Rasters if available */}
+              {analysisResult && (
+                <div>
+                  <span className="text-slate-400 font-semibold uppercase text-[10px] tracking-wider block mb-2">
+                    Sentinel-2 Satellite Acquisition
+                  </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => setImageMode('before')}
+                      className={`py-2 px-2.5 rounded-xl font-medium border text-[11px] ${
+                        imageMode === 'before'
+                          ? 'bg-blue-600 text-white border-blue-500'
+                          : 'bg-slate-950 text-slate-300 border-slate-800'
+                      }`}
+                    >
+                      T1 Baseline
+                    </button>
+                    <button
+                      onClick={() => setImageMode('after')}
+                      className={`py-2 px-2.5 rounded-xl font-medium border text-[11px] ${
+                        imageMode === 'after'
+                          ? 'bg-blue-600 text-white border-blue-500'
+                          : 'bg-slate-950 text-slate-300 border-slate-800'
+                      }`}
+                    >
+                      T2 Recent
+                    </button>
+                    <button
+                      onClick={() => setImageMode('overlay')}
+                      className={`py-2 px-2.5 rounded-xl font-bold border text-[11px] ${
+                        imageMode === 'overlay'
+                          ? 'bg-red-600 text-white border-red-500'
+                          : 'bg-slate-950 text-red-400 border-slate-800'
+                      }`}
+                    >
+                      Change Overlay
+                    </button>
+                    <button
+                      onClick={() => setImageMode('none')}
+                      className={`py-2 px-2.5 rounded-xl font-medium border text-[11px] ${
+                        imageMode === 'none'
+                          ? 'bg-slate-800 text-white border-slate-700'
+                          : 'bg-slate-950 text-slate-400 border-slate-800'
+                      }`}
+                    >
+                      Raster Off
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* AI Detection Feature Layers */}
+              {analysisResult && (
+                <div>
+                  <span className="text-slate-400 font-semibold uppercase text-[10px] tracking-wider block mb-2">
+                    AI Feature Vectors
+                  </span>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => setShowOutsideEncroachment(!showOutsideEncroachment)}
+                      className={`w-full py-2.5 px-3 rounded-xl font-bold border text-xs flex items-center justify-between ${
+                        showOutsideEncroachment
+                          ? 'bg-red-950/40 text-red-300 border-red-500/50'
+                          : 'bg-slate-950 text-slate-500 border-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <span className="w-3 h-3 rounded-full bg-red-600 animate-pulse" />
+                        <span>⚠️ Potential Outside Encroachment</span>
+                      </div>
+                      {showOutsideEncroachment && <Check className="w-4 h-4 text-red-400" />}
+                    </button>
+
+                    <button
+                      onClick={() => setShowInsideDisturbance(!showInsideDisturbance)}
+                      className={`w-full py-2.5 px-3 rounded-xl font-medium border text-xs flex items-center justify-between ${
+                        showInsideDisturbance
+                          ? 'bg-red-500/10 text-red-300 border-red-500/30'
+                          : 'bg-slate-950 text-slate-500 border-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <span className="w-3 h-3 rounded-full bg-red-500" />
+                        <span>Inside Lease Excavation Pit</span>
+                      </div>
+                      {showInsideDisturbance && <Check className="w-4 h-4 text-red-400" />}
+                    </button>
+
+                    <button
+                      onClick={() => setShowVegetationLoss(!showVegetationLoss)}
+                      className={`w-full py-2.5 px-3 rounded-xl font-medium border text-xs flex items-center justify-between ${
+                        showVegetationLoss
+                          ? 'bg-pink-500/10 text-pink-300 border-pink-500/30'
+                          : 'bg-slate-950 text-slate-500 border-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <span className="w-3 h-3 rounded-full bg-pink-500" />
+                        <span>Vegetation Loss (NDVI Drop)</span>
+                      </div>
+                      {showVegetationLoss && <Check className="w-4 h-4 text-pink-400" />}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Mobile Quick Actions */}
+              {analysisResult && (
+                <div className="pt-2 border-t border-slate-800 space-y-2">
+                  <span className="text-slate-400 font-semibold uppercase text-[10px] tracking-wider block">
+                    Export Dossier
+                  </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => {
+                        onDownloadPdf?.();
+                        setIsMobileLayerSheetOpen(false);
+                      }}
+                      className="py-2.5 px-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl flex items-center justify-center space-x-1.5 shadow"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>PDF Report</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        onDownloadKml?.();
+                        setIsMobileLayerSheetOpen(false);
+                      }}
+                      className="py-2.5 px-3 bg-slate-800 hover:bg-slate-700 text-cyan-300 font-medium rounded-xl border border-slate-700 flex items-center justify-center space-x-1.5"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Export KML</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Embedded Symbology Legend */}
+              <div className="pt-2 border-t border-slate-800">
+                <Legend className="w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Leaflet Map Div */}
       <div ref={mapContainerRef} className="w-full h-full" />
 
-      {/* Floating Legend */}
+      {/* Desktop Floating Legend */}
       {showLegend && (
-        <div className="absolute bottom-6 right-3 z-30 max-w-xs">
+        <div className="hidden md:block absolute bottom-6 right-3 z-30 max-w-xs">
           <Legend />
         </div>
       )}
 
-      {/* Bottom Coordinates & Acquisition Status bar */}
-      <div className="absolute bottom-2 left-24 z-30 bg-slate-900/90 backdrop-blur border border-slate-800 px-3 py-1 rounded-md text-[11px] text-slate-400 flex items-center space-x-4 shadow">
+      {/* Desktop Bottom Coordinates & Acquisition Status bar */}
+      <div className="hidden sm:flex absolute bottom-2 left-24 z-30 bg-slate-900/90 backdrop-blur border border-slate-800 px-3 py-1 rounded-md text-[11px] text-slate-400 items-center space-x-4 shadow">
         <div>
           <span>Coordinates: </span>
           <span className="font-mono text-slate-200">

@@ -42,36 +42,36 @@ export const Dashboard: React.FC<DashboardProps> = ({
   }, []);
 
   return (
-    <div className="flex-1 overflow-y-auto p-6 bg-slate-950 text-slate-100">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-5 md:p-6 pb-20 md:pb-6 bg-slate-950 text-slate-100">
+      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
         {/* Banner */}
-        <div className="bg-gradient-to-r from-slate-900 via-blue-950/40 to-slate-900 border border-slate-800 rounded-2xl p-6 shadow-md flex flex-wrap items-center justify-between gap-4">
-          <div>
+        <div className="bg-gradient-to-r from-slate-900 via-blue-950/40 to-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
             <div className="flex items-center space-x-2">
               <span className="bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">
                 DGM&M Punjab
               </span>
-              <span className="text-xs text-slate-400 font-mono">Surveillance Operations Room</span>
+              <span className="text-xs text-slate-400 font-mono">Operations Room</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mt-1">
-              Mining Inspection and Monitoring Dashboard
+            <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight">
+              Mining Inspection & Monitoring Dashboard
             </h1>
-            <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
               Automated remote-sensing surveillance of mining concessions across the Potohar and Salt Range basins.
-              Monitors official lease perimeters and mandatory 1,000-metre surrounding zones for unpermitted excavation and environmental impact.
+              Monitors official lease perimeters and mandatory 1,000-metre surrounding zones for unpermitted excavation.
             </p>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 flex-shrink-0">
             <button
               onClick={onNavigateToImport}
-              className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold px-4 py-2.5 rounded-xl transition cursor-pointer"
+              className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold px-4 py-2.5 rounded-xl transition cursor-pointer min-h-[42px] flex items-center justify-center"
             >
               + Bulk Import CSV
             </button>
             <button
               onClick={() => onNavigateToMonitoring()}
-              className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-lg transition cursor-pointer flex items-center space-x-2"
+              className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-lg transition cursor-pointer flex items-center justify-center space-x-2 min-h-[42px]"
             >
               <Satellite className="w-4 h-4" />
               <span>Launch Monitoring</span>
@@ -80,122 +80,154 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         {/* Top KPI Cards Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {/* KPI 1: Leases */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 shadow-sm flex flex-col justify-between">
             <div className="flex justify-between items-center text-slate-400 text-xs mb-1">
-              <span>Registered Concessions</span>
-              <Layers className="w-4 h-4 text-blue-400" />
+              <span className="truncate pr-1">Registered Leases</span>
+              <Layers className="w-4 h-4 text-blue-400 flex-shrink-0" />
             </div>
-            <div className="text-2xl font-bold text-white">
+            <div className="text-xl sm:text-2xl font-bold text-white">
               {stats ? stats.registered_leases : '...'}
             </div>
-            <div className="text-[11px] text-slate-400 mt-1">
-              {stats ? `${stats.leases_analysed} under active surveillance` : ''}
+            <div className="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">
+              {stats ? `${stats.leases_analysed} under surveillance` : ''}
             </div>
           </div>
 
           {/* KPI 2: Total Detected Disturbance */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 shadow-sm flex flex-col justify-between">
             <div className="flex justify-between items-center text-slate-400 text-xs mb-1">
-              <span>Total Detected Disturbance</span>
-              <Satellite className="w-4 h-4 text-emerald-400" />
+              <span className="truncate pr-1">Total Disturbance</span>
+              <Satellite className="w-4 h-4 text-emerald-400 flex-shrink-0" />
             </div>
-            <div className="flex items-baseline space-x-1.5">
-              <span className="text-2xl font-bold text-white">
+            <div className="flex items-baseline space-x-1">
+              <span className="text-xl sm:text-2xl font-bold text-white">
                 {stats ? stats.total_detected_disturbance_ha.toFixed(2) : '...'}
               </span>
               <span className="text-xs text-slate-400">ha</span>
             </div>
-            <div className="text-[11px] text-slate-400 mt-1">
-              Across monitored Punjab quarries
+            <div className="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">
+              Monitored Punjab quarries
             </div>
           </div>
 
           {/* KPI 3: Potential Encroachment Alerts */}
-          <div className={`border rounded-xl p-4 shadow-sm ${
+          <div className={`border rounded-xl p-3 sm:p-4 shadow-sm flex flex-col justify-between ${
             stats && stats.encroachment_alerts_count > 0
               ? 'bg-red-950/30 border-red-500/50 text-red-200'
               : 'bg-slate-900 border-slate-800'
           }`}>
             <div className="flex justify-between items-center text-xs mb-1">
-              <span className="font-semibold">Boundary Encroachments</span>
-              <ShieldAlert className="w-4 h-4 text-red-400" />
+              <span className="font-semibold truncate pr-1">Encroachments</span>
+              <ShieldAlert className="w-4 h-4 text-red-400 flex-shrink-0" />
             </div>
-            <div className="flex items-baseline space-x-1.5">
-              <span className="text-2xl font-extrabold text-red-400">
+            <div className="flex items-baseline space-x-1">
+              <span className="text-xl sm:text-2xl font-extrabold text-red-400">
                 {stats ? stats.encroachment_alerts_count : '...'}
               </span>
               <span className="text-xs text-slate-400">alerts</span>
             </div>
-            <div className="text-[11px] mt-1 text-red-300">
+            <div className="text-[10px] sm:text-[11px] mt-1 text-red-300 truncate">
               {stats ? `${stats.total_outside_excavation_ha.toFixed(2)} ha outside boundary` : ''}
             </div>
           </div>
 
           {/* KPI 4: Pending Field Verification */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 shadow-sm flex flex-col justify-between">
             <div className="flex justify-between items-center text-slate-400 text-xs mb-1">
-              <span>Pending Field Verification</span>
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
+              <span className="truncate pr-1">Field Verification</span>
+              <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0" />
             </div>
-            <div className="text-2xl font-bold text-amber-400">
+            <div className="text-xl sm:text-2xl font-bold text-amber-400">
               {stats ? stats.pending_field_verifications : '...'}
             </div>
-            <div className="text-[11px] text-slate-400 mt-1">
-              Surveillance records awaiting sign-off
+            <div className="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">
+              Awaiting sign-off
             </div>
           </div>
         </div>
 
         {/* Secondary KPI Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="p-2.5 rounded-lg bg-pink-500/10 border border-pink-500/30 text-pink-400">
-                <Trees className="w-5 h-5" />
+              <div className="p-2 sm:p-2.5 rounded-lg bg-pink-500/10 border border-pink-500/30 text-pink-400 flex-shrink-0">
+                <Trees className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <div>
-                <div className="text-xs text-slate-400">Vegetation Cover Loss (NDVI Reduction)</div>
-                <div className="text-lg font-bold text-slate-100">
+                <div className="text-[11px] sm:text-xs text-slate-400">Vegetation Cover Loss (NDVI)</div>
+                <div className="text-base sm:text-lg font-bold text-slate-100">
                   {stats ? `${stats.vegetation_cover_loss_ha.toFixed(2)} ha` : '...'}
                 </div>
               </div>
             </div>
-            <span className="text-xs text-slate-500 font-mono">Sentinel-2 MSI B8/B4</span>
+            <span className="text-[10px] sm:text-xs text-slate-500 font-mono">Sentinel-2</span>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400">
-                <Layers className="w-5 h-5" />
+              <div className="p-2 sm:p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 flex-shrink-0">
+                <Layers className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <div>
-                <div className="text-xs text-slate-400">Stockpile & Dump Inventory Shifts</div>
-                <div className="text-lg font-bold text-slate-100">
+                <div className="text-[11px] sm:text-xs text-slate-400">Stockpile & Dump Shifts</div>
+                <div className="text-base sm:text-lg font-bold text-slate-100">
                   {stats ? `${stats.stockpile_changes_ha.toFixed(2)} ha` : '...'}
                 </div>
               </div>
             </div>
-            <span className="text-xs text-slate-500 font-mono">Surface Reflectance</span>
+            <span className="text-[10px] sm:text-xs text-slate-500 font-mono">Reflectance</span>
           </div>
         </div>
 
         {/* Registered Concessions & Recent Inspections Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Column 1 & 2: Registered Concessions Directory */}
-          <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
+          <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-3.5 sm:p-5 shadow-sm space-y-3 sm:space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold text-white flex items-center space-x-2">
+              <h2 className="text-xs sm:text-sm font-bold text-white flex items-center space-x-2">
                 <MapPin className="w-4 h-4 text-blue-400" />
                 <span>Punjab Registered Mining Leases</span>
               </h2>
-              <span className="text-xs text-slate-400 font-mono">
-                {leases.length} active concessions
+              <span className="text-[11px] text-slate-400 font-mono">
+                {leases.length} active
               </span>
             </div>
 
-            <div className="overflow-x-auto">
+            {/* Mobile Concession Cards View */}
+            <div className="md:hidden space-y-2.5">
+              {leases.map((l) => (
+                <div key={l.lease_id} className="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <span className="text-[10px] font-mono font-bold text-blue-400 bg-blue-950/80 px-1.5 py-0.5 rounded border border-blue-900/60">
+                        {l.lease_id}
+                      </span>
+                      <h3 className="font-semibold text-xs sm:text-sm text-white mt-1">{l.quarry_name}</h3>
+                    </div>
+                    <span className="text-xs font-mono text-slate-300 font-bold bg-slate-900 px-2 py-0.5 rounded">
+                      {l.lease_area_ha} ha
+                    </span>
+                  </div>
+                  <div className="flex items-center text-[11px] text-slate-400 space-x-2">
+                    <span>Mineral: <strong className="text-slate-200">{l.mineral}</strong></span>
+                    <span>•</span>
+                    <span>District: <strong className="text-slate-200">{l.district}</strong></span>
+                  </div>
+                  <button
+                    onClick={() => onNavigateToMonitoring(l.lease_id)}
+                    className="w-full flex items-center justify-center space-x-1.5 bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/30 font-semibold py-2 px-3 rounded-lg text-xs transition cursor-pointer min-h-[42px]"
+                  >
+                    <span>Launch Satellite Analysis</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Concessions Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-300 border-collapse">
                 <thead>
                   <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
@@ -266,16 +298,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         <span>Total: {Number(a.total_disturbance_ha).toFixed(2)} ha</span>
                         <span>Outside: <strong className={a.outside_disturbance_ha > 0 ? 'text-red-400' : 'text-slate-300'}>{Number(a.outside_disturbance_ha).toFixed(2)} ha</strong></span>
                       </div>
-                      <div className="flex justify-between items-center pt-1 border-t border-slate-850">
+                      <div className="flex justify-between items-center pt-2 border-t border-slate-850">
                         <span className="text-[10px] text-slate-500 font-mono">{a.actual_end_date}</span>
                         <a
                           href={`/api/reports/${a.id}/download`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center space-x-1 text-blue-400 hover:text-white text-[11px] font-medium"
+                          className="flex items-center space-x-1.5 text-blue-400 hover:text-white text-xs font-semibold bg-slate-900 border border-slate-700/80 px-2.5 py-1.5 rounded-lg transition min-h-[36px]"
                         >
-                          <FileText className="w-3 h-3" />
-                          <span>PDF</span>
+                          <FileText className="w-3.5 h-3.5" />
+                          <span>PDF Report</span>
                         </a>
                       </div>
                     </div>
@@ -291,7 +323,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="pt-3 border-t border-slate-800">
               <button
                 onClick={() => onNavigateToMonitoring()}
-                className="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-lg text-xs font-semibold transition cursor-pointer"
+                className="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer min-h-[42px] flex items-center justify-center"
               >
                 Inspect New Lease
               </button>

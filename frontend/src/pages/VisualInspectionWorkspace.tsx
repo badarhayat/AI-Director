@@ -63,6 +63,7 @@ export const VisualInspectionWorkspace: React.FC<VisualInspectionWorkspaceProps>
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('ALL');
   const [inspectorNotesInput, setInspectorNotesInput] = useState<string>('');
   const [savingVerification, setSavingVerification] = useState<boolean>(false);
+  const [mobileTab, setMobileTab] = useState<'map' | 'audit'>('map');
 
   // Imported Layers
   const [importedLayers, setImportedLayers] = useState<ImportedLayer[]>([]);
@@ -468,21 +469,53 @@ export const VisualInspectionWorkspace: React.FC<VisualInspectionWorkspaceProps>
       )}
 
       {/* Workspace Split Layout: Dual Map (Left) + Inspector Drawer (Right) */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative">
         {/* Main Dual Map Container */}
-        <div className="flex-1 h-full overflow-hidden relative">
+        <div className={`flex-1 h-full overflow-hidden relative ${mobileTab === 'audit' ? 'hidden lg:block' : 'block'}`}>
           <DualMapViewer
             lease={currentLease}
             analysisResult={analysisResult}
             selectedFeature={selectedFeature}
-            onSelectFeature={handleFeatureClick}
+            onSelectFeature={(feat) => {
+              handleFeatureClick(feat);
+              // On mobile, if a feature is tapped, switch to audit tab so inspector can verify it
+              if (window.innerWidth < 1024) {
+                setMobileTab('audit');
+              }
+            }}
             importedLayers={importedLayers}
             importedGeojsonLayers={importedGeojsonList}
           />
+
+          {/* Mobile Floating Audit Toggle */}
+          {featuresList.length > 0 && mobileTab === 'map' && (
+            <button
+              onClick={() => setMobileTab('audit')}
+              className="lg:hidden absolute bottom-3 right-3 z-30 flex items-center space-x-1.5 bg-slate-900/95 backdrop-blur border border-slate-700/90 text-slate-100 px-3.5 py-2.5 rounded-xl text-xs font-bold shadow-2xl active:scale-95 transition min-h-[42px]"
+            >
+              <ShieldAlert className="w-4 h-4 text-amber-400" />
+              <span>Audit Features ({featuresList.length})</span>
+            </button>
+          )}
         </div>
 
         {/* Right Drawer: Inspector Feature Audit & Verification Console */}
-        <div className="w-96 bg-slate-900 border-l border-slate-800 flex flex-col justify-between h-full flex-shrink-0 z-20 overflow-hidden shadow-2xl">
+        <div className={`w-full lg:w-96 bg-slate-900 border-l border-slate-800 flex-col justify-between h-full flex-shrink-0 z-20 overflow-hidden shadow-2xl ${
+          mobileTab === 'map' ? 'hidden lg:flex' : 'flex'
+        }`}>
+          {/* Mobile Back to Map Bar */}
+          <div className="lg:hidden p-2 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+            <button
+              onClick={() => setMobileTab('map')}
+              className="flex items-center space-x-1.5 text-xs text-blue-400 font-bold px-2 py-1.5 rounded-lg bg-slate-900 border border-slate-800"
+            >
+              <span>← Back to Dual Maps</span>
+            </button>
+            <span className="text-[11px] font-mono text-slate-400">
+              {featuresList.length} candidate features
+            </span>
+          </div>
+
           {/* Drawer Header & Summary KPIs */}
           <div className="p-3 border-b border-slate-800 bg-slate-950/50 space-y-2">
             <div className="flex items-center justify-between">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
+import { BottomNav } from './components/BottomNav';
 import { Dashboard } from './pages/Dashboard';
 import { Monitoring } from './pages/Monitoring';
 import { VisualInspectionWorkspace } from './pages/VisualInspectionWorkspace';
@@ -144,25 +145,37 @@ export function App() {
 
         {/* Mobile Sidebar Overlay Drawer */}
         {isMobileSidebarOpen && (
-          <div className="md:hidden fixed inset-0 z-40 flex">
+          <div className="md:hidden fixed inset-0 z-50 flex">
             {/* Backdrop */}
             <div
-              className="fixed inset-0 bg-black/60 backdrop-blur-xs"
+              className="fixed inset-0 bg-black/70 backdrop-blur-xs transition-opacity"
               onClick={() => setIsMobileSidebarOpen(false)}
             />
             {/* Drawer */}
-            <div className="relative z-50 w-72 max-w-[80vw] h-full bg-slate-900 shadow-2xl flex flex-col">
-              <Sidebar
-                currentTab={currentTab}
-                onSelectTab={handleSelectTab}
-                encroachmentAlertCount={alertCount}
-              />
+            <div className="relative z-50 w-72 max-w-[85vw] h-full bg-slate-900 shadow-2xl flex flex-col border-r border-slate-800">
+              <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-950">
+                <span className="text-xs font-bold text-slate-200 uppercase tracking-wider">Navigation Menu</span>
+                <button
+                  onClick={() => setIsMobileSidebarOpen(false)}
+                  className="p-1 rounded-lg text-slate-400 hover:text-white bg-slate-800 border border-slate-700"
+                  aria-label="Close menu"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                <Sidebar
+                  currentTab={currentTab}
+                  onSelectTab={handleSelectTab}
+                  encroachmentAlertCount={alertCount}
+                />
+              </div>
             </div>
           </div>
         )}
 
         {/* Dynamic Content Views */}
-        <main className="flex-1 flex overflow-hidden">
+        <main className="flex-1 flex overflow-hidden pb-14 md:pb-0">
           {currentTab === 'dashboard' && (
             <Dashboard
               onNavigateToMonitoring={handleNavigateToMonitoring}
@@ -216,6 +229,14 @@ export function App() {
 
           {currentTab === 'settings' && <Settings />}
         </main>
+
+        {/* Mobile-First Bottom Navigation Bar */}
+        <BottomNav
+          currentTab={currentTab}
+          onSelectTab={handleSelectTab}
+          onOpenMore={() => setIsMobileSidebarOpen(true)}
+          encroachmentAlertCount={alertCount}
+        />
       </div>
     </div>
   );

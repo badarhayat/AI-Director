@@ -68,34 +68,33 @@ export const LeaseImport: React.FC<LeaseImportProps> = ({
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-6 bg-slate-950 text-slate-100">
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="flex-1 overflow-y-auto p-3 sm:p-5 md:p-6 pb-20 md:pb-6 bg-slate-950 text-slate-100">
+      <div className="max-w-6xl mx-auto space-y-4 sm:space-y-6">
         {/* Page Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3 sm:pb-4">
           <div>
-            <h1 className="text-xl font-bold text-white flex items-center space-x-2">
-              <UploadCloud className="w-6 h-6 text-blue-400" />
+            <h1 className="text-lg sm:text-xl font-bold text-white flex items-center space-x-2">
+              <UploadCloud className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400" />
               <span>Bulk Lease Coordinate Import</span>
             </h1>
             <p className="text-xs text-slate-400 mt-1">
-              Upload mining lease boundaries via CSV (Format A: WKT / GeoJSON or Format B: Multi-row Lat/Lon vertices).
-              Polygons are projected into UTM Zone 43N to compute true surface areas and automatic 1 km monitoring zones.
+              Upload mining lease boundaries via CSV. Polygons are projected into UTM Zone 43N to compute true surface areas and automatic 1 km monitoring zones.
             </p>
           </div>
 
           {/* Download CSV Templates */}
-          <div className="flex items-center space-x-2 bg-slate-900 p-1.5 rounded-lg border border-slate-800">
-            <span className="text-xs text-slate-400 px-2 font-mono">Download Template:</span>
+          <div className="flex flex-wrap items-center gap-2 bg-slate-900 p-1.5 rounded-xl border border-slate-800">
+            <span className="text-[11px] text-slate-400 px-1 font-mono">Template:</span>
             <button
               onClick={() => downloadTemplate('FORMAT_B')}
-              className="flex items-center space-x-1 text-xs bg-slate-800 hover:bg-slate-700 text-blue-300 px-2.5 py-1.5 rounded border border-slate-700 transition cursor-pointer"
+              className="flex items-center space-x-1 text-xs bg-slate-800 hover:bg-slate-700 text-blue-300 px-2.5 py-1.5 rounded-lg border border-slate-700 transition cursor-pointer min-h-[36px]"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Format B (Vertices)</span>
             </button>
             <button
               onClick={() => downloadTemplate('FORMAT_A')}
-              className="flex items-center space-x-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded border border-slate-700 transition cursor-pointer"
+              className="flex items-center space-x-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700 transition cursor-pointer min-h-[36px]"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Format A (WKT)</span>
