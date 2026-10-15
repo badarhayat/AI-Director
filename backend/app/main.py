@@ -1,10 +1,12 @@
 import os
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from contextlib import asynccontextmanager
-from app.config import APP_TITLE, APP_SUBTITLE, BASE_DIR
+from app.config import APP_TITLE, APP_SUBTITLE, BASE_DIR, FRONTEND_DIST_DIR
 from app.db import init_db, get_db
 from app.services.csv_importer import generate_csv_template, parse_lease_csv
 from app.routers import leases, analysis, minerals, reports
@@ -37,14 +39,25 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS configuration
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# CORS configuration (configurable for production, default wildcard for local demo)
+cors_origins_env = os.getenv("CORS_ORIGINS", "*").strip()
+if cors_origins_env and cors_origins_env != "*":
+    origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()]
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 # Register routers
 app.include_router(leases.router)
@@ -99,6 +112,18 @@ def get_dashboard_stats():
     }
 
 # Mount static frontend production build if available
-frontend_dist = BASE_DIR.parent.parent / "frontend" / "dist"
-if frontend_dist.exists():
-    app.mount("/", StaticFiles(directory=str(frontend_dist), html=True), name="frontend")
+if FRONTEND_DIST_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIST_DIR), html=True), name="frontend")
+
+# SPA client-side routing fallback and API 404 separation
+@app.exception_handler(StarletteHTTPException)
+async def spa_or_api_exception_handler(request: Request, exc: StarletteHTTPException):
+    # API endpoints always return clean JSON error responses
+    if request.url.path.startswith("/api"):
+        return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail or "Not Found"})
+    # Non-API 404s serve index.html for React client-side routing
+    if exc.status_code == 404 and FRONTEND_DIST_DIR.exists():
+        index_file = FRONTEND_DIST_DIR / "index.html"
+        if index_file.exists():
+            return FileResponse(index_file)
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
